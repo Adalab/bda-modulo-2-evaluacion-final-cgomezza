@@ -56,8 +56,8 @@ GROUP BY rating;
 -- Selecciona el id, nombre y apellido del cliente de la tabla clientes y juntalo con la table rental atraves de la columna customer id. Agrupalo por cliente.
 SELECT c.customer_id, c.first_name, c.last_name 
 FROM customer AS c
-INNER JOIN
-rental AS r
+
+INNER JOIN rental AS r
 ON c.customer_id = r.customer_id
 GROUP BY c.customer_id;
 
@@ -76,6 +76,7 @@ GROUP BY rating;
 -- Selecciona nombre y apellidos de la tabla actores y unelo a la tabla film, a traves del film.id cuando el titulo sea "indian love"
 SELECT a.first_name, a.last_name 
 FROM actor AS a
+
 INNER JOIN film AS f
 ON f.film_id = f.film_id
 WHERE f.title = ("Indian Love");
@@ -90,6 +91,7 @@ WHERE description LIKE '%dog%' OR description LIKE '%cat%';
 -- Selecciona id actor, nombre y apellidos de actor, uniendolo con film actor pot actor.id. y buscar donde el id.actor is NULL.
 SELECT  a.actor_id, a.first_name, a.last_name
 FROM actor AS a
+
 LEFT JOIN film_actor 
 ON a.actor_id = film_actor.actor_id
 WHERE a.actor_id IS NULL;
@@ -106,10 +108,12 @@ WHERE release_year BETWEEN 2005 AND 2010;
  FROM category
  -- Selecciona el titulo de la pelicula desde la tabla film, y unelo a traves de film.id con la tabla film category. Y ahora une la tabla category a traves de la columna category y id. Y una vez creado, busca los datos donde el category name sea Family
  
- SELECT film.title
+SELECT film.title
 FROM film
+
 INNER JOIN film_category 
 ON film.film_id = film_category.film_id
+
 INNER JOIN category ON film_category.category_id = category.category_id
 WHERE category.name = 'Family';
 
@@ -118,6 +122,7 @@ WHERE category.name = 'Family';
 
 SELECT a.first_name, a.last_name
 FROM actor AS a
+
 INNER JOIN film_actor AS fa ON a.actor_id = fa.actor_id
 GROUP BY a.actor_id
 HAVING COUNT(fa.film_id) > 10;
@@ -129,3 +134,57 @@ SELECT title
 FROM film
 WHERE rating = 'R' AND length > 120;
 
+-- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y muestra el nombre de la categoría junto con el promedio de duración.
+ --  Necesitamos el nombre, y el promedio, entonces ponemos SELECT, y buscamos las comlumnas en comun, para la categoria unimos por category:id de la tabla category y film_ category.
+ --  y para la duracion la sacamos de la tabla film y la unimos con film category a traves de la columna film.id. Y lo agrupamos por el nombre de la categoria. Ponemos la condicion de que sea mas de 120min.
+SELECT * 
+FROM category;
+
+SELECT name AS nombre, AVG(f.length) AS promedio
+FROM category AS c
+
+INNER JOIN film_category AS fc
+ON c.category_id = fc.category_id
+
+INNER JOIN film AS f
+ON fc.film_id = f.film_id
+
+GROUP BY c.name
+HAVING AVG(f.length) > 120;
+
+-- 21. Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto con la cantidad de películas en las que han actuado.
+
+SELECT *
+FROM actor;
+SELECT *
+FROM film_actor;
+
+-- Utilizamos actor id para unir las tablas fil actor y actor, lo agrupamos por el actor y le pedimos que nos cuente solo los que tienen 5 o mas peliculas.
+
+SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS count
+FROM actor AS a
+
+INNER JOIN film_actor as fa
+ON a.actor_id = fa.actor_id
+
+GROUP BY a.actor_id, a.first_name, a.last_name
+HAVING COUNT(fa.film_id) >= 5;
+
+-- 22.  Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una subconsulta para encontrar los rental_ids con una duración superior a 5 días y luego selecciona las películas correspondientes.
+
+
+-- 23.  Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la categoría "Horror" y luego exclúyelos de la lista de actores
+
+
+-- BONUS 24. : Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la tabla film.
+ -- Necesitamos el titulo de la tabla FILM y a traves de film_id lo unimos con la tabla category_film, con los datos que coincidan en ambas tablas, y hacemos lo mismo con category_id. Y le especificamso que solo 
+ -- necesitamos las que el nombre de la categoria sea Comedy de la tabla category y de la tabla film sea > 180 min. 
+SELECT f.title
+FROM film AS f
+
+INNER JOIN film_category AS fc 
+ON f.film_id = fc.film_id
+
+INNER JOIN category AS c 
+ON fc.category_id = c.category_id
+WHERE c.name = 'Comedy' AND f.length > 180;
