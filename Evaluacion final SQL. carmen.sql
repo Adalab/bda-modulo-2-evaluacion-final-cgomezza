@@ -68,7 +68,7 @@ SELECT
 
 --  12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la clasificación junto con el promedio de duración.
 -- Selecciona el rating calculando el promedio de la tabla film y agrupalo por rating.
-SELECT rating, AVG(length) AS average_length
+SELECT rating, AVG(length) AS promedio
 FROM film
 GROUP BY rating;
 
@@ -177,7 +177,7 @@ HAVING COUNT(fa.film_id) >= 5;
 
 
 -- BONUS 24. : Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la tabla film.
- -- Necesitamos el titulo de la tabla FILM y a traves de film_id lo unimos con la tabla category_film, con los datos que coincidan en ambas tablas, y hacemos lo mismo con category_id. Y le especificamso que solo 
+ -- Necesitamos el titulo de la tabla FILM y a traves de film_id lo unimos con la tabla category_film, y hacemos lo mismo con category_id. Y le especificamso que solo 
  -- necesitamos las que el nombre de la categoria sea Comedy de la tabla category y de la tabla film sea > 180 min. 
 SELECT f.title
 FROM film AS f
